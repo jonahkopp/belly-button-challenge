@@ -1,14 +1,12 @@
-const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json";
+const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json"
 
 // Promise Pending
-const dataPromise = d3.json(url);
-console.log("Data Promise: ", dataPromise);
+const dataPromise = d3.json(url)
 
-// Fetch the JSON data
-d3.json(url).then(function(data) {
+let dropdownMenu = d3.select("#selDataset")
 
-    // create dropdown and populate with values
-    let dropdownMenu = d3.select("#selDataset");
+// Fetch the JSON data and initialize the page
+d3.json(url).then(function initialize(data) {
 
     for (let i = 0; i < data.names.length; i++) {
         menuItem = dropdownMenu.append('option')
@@ -16,18 +14,33 @@ d3.json(url).then(function(data) {
         menuItem.text(`${data.names[i]}`)
     }
 
+    // updateCharts('940',data)
+
+    dropdownMenu.on("change", updateCharts(data))
+
+});
+
+function updateCharts(data) {
+    // Use D3 to get current value in the dropdown
+    person = dropdownMenu.property("value");
+
+    console.log(person)
+
+    // find which index that person is in
+    personIndex = data.names.findIndex(item => item === person)
+  
     // get the sample IDs
-    let labels = data.samples[0].otu_ids
+    let labels = data.samples[personIndex].otu_ids
 
     // need to add 'OTU' so that plotly doesn't treat samples as integers
     // in the bar chart
     barLabels = labels.map(item => `OTU ${item}`)
 
     // get sample values
-    let values = data.samples[0].sample_values
+    let values = data.samples[personIndex].sample_values
 
     // get sample names
-    let hoverLabels = data.samples[0].otu_labels
+    let hoverLabels = data.samples[personIndex].otu_labels
     
     trace1 = {
         x:values.slice(0,10).reverse(),
@@ -61,13 +74,10 @@ d3.json(url).then(function(data) {
     // Render the plot to the div tag with id "bubble" on the page
     Plotly.newPlot("bubble",[trace2],layout2)
 
-
     // metadata
-    let metadata = data.metadata[0]
+    let metadata = data.metadata[personIndex]
 
     let metaDataTable = d3.select('.panel-body').append("table").classed("table-striped", true)
-    
-    // metaDataTable.classed("table-striped", true)
 
     for (let i = 0; i < Object.keys(metadata).length; i++) {
 
@@ -76,5 +86,4 @@ d3.json(url).then(function(data) {
         tableRow.append('td').text(Object.values(metadata)[i])
 
     }
-
-});
+  }
