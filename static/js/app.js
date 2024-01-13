@@ -7,11 +7,20 @@ console.log("Data Promise: ", dataPromise);
 // Fetch the JSON data
 d3.json(url).then(function(data) {
 
+    // create dropdown and populate with values
+    let dropdownMenu = d3.select("#selDataset");
+
+    for (let i = 0; i < data.names.length; i++) {
+        menuItem = dropdownMenu.append('option')
+        menuItem.property("value",`${data.names[i]}`)
+        menuItem.text(`${data.names[i]}`)
+    }
+
     // get the sample IDs
     let labels = data.samples[0].otu_ids
 
     // need to add 'OTU' so that plotly doesn't treat samples as integers
-    // in plotting in the bar chart
+    // in the bar chart
     barLabels = labels.map(item => `OTU ${item}`)
 
     // get sample values
