@@ -53,7 +53,19 @@ d3.json(url).then(function(data) {
     Plotly.newPlot("bubble",[trace2],layout2)
 
 
+    // metadata
+    let metadata = data.metadata[0]
 
+    let metaDataTable = d3.select('.panel-body').append("table").classed("table-striped", true)
     
+    // metaDataTable.classed("table-striped", true)
+
+    for (let i = 0; i < Object.keys(metadata).length; i++) {
+
+        tableRow = metaDataTable.append('tr')
+        tableRow.append('td').text(`${Object.keys(metadata)[i]}: `)
+        tableRow.append('td').text(Object.values(metadata)[i])
+
+    }
 
 });
