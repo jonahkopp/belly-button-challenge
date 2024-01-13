@@ -6,3 +6,6 @@ https://plotly.com/javascript/bubble-charts/
 
 Documentation for changing properties of JS objects:
 https://www.geeksforgeeks.org/d3-js-selection-property-function/
+
+Documentation to get index of a value in an array:
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
