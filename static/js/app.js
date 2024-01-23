@@ -5,8 +5,16 @@ const dataPromise = d3.json(url)
 
 let dropdownMenu = d3.select("#selDataset")
 
+let metaDataTable = d3.select('.panel-body').append("table").classed("table-striped", true)
+
+function optionChanged(person) {
+
+    updateCharts(output,person)
+
+}
+
 // Fetch the JSON data and initialize the page
-d3.json(url).then(function initialize(data) {
+dataset = d3.json(url).then(function initialize(data) {
 
     for (let i = 0; i < data.names.length; i++) {
         menuItem = dropdownMenu.append('option')
@@ -14,17 +22,20 @@ d3.json(url).then(function initialize(data) {
         menuItem.text(`${data.names[i]}`)
     }
 
-    // updateCharts('940',data)
+    updateCharts(data)
 
-    dropdownMenu.on("change", updateCharts(data))
+    output = data
+
+    return output
 
 });
 
-function updateCharts(data) {
-    // Use D3 to get current value in the dropdown
-    person = dropdownMenu.property("value");
-
-    console.log(person)
+function updateCharts(data, person = dropdownMenu.property("value")) {
+    
+    // for testing
+    // console.log(person)
+    // console.log(data)
+    // console.log(data.names)
 
     // find which index that person is in
     personIndex = data.names.findIndex(item => item === person)
@@ -77,7 +88,11 @@ function updateCharts(data) {
     // metadata
     let metadata = data.metadata[personIndex]
 
-    let metaDataTable = d3.select('.panel-body').append("table").classed("table-striped", true)
+    // clear old metadata
+    metaDataTable.remove();
+
+    // append new metadata
+    metaDataTable = d3.select('.panel-body').append("table").classed("table-striped", true)
 
     for (let i = 0; i < Object.keys(metadata).length; i++) {
 
@@ -86,4 +101,4 @@ function updateCharts(data) {
         tableRow.append('td').text(Object.values(metadata)[i])
 
     }
-  }
+  };
